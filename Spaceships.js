@@ -34,9 +34,11 @@ export default function SpaceshipsTab({ navigation }) {
   if (loading) return <ActivityIndicator size="large" color="dodgerblue" />;
   if (error) return <Text>Error: {error.message}</Text>;
 
+  // Show only filtered spaceships if there are any
+  // Search Input
+
   return (
     <View style={styles.container}>
-      // Search Input
       <TextInput
         style={styles.input}
         placeholder="Search Spaceships..."
@@ -44,7 +46,7 @@ export default function SpaceshipsTab({ navigation }) {
         onChangeText={setSearchText}
       />
       <Button title="Search" onPress={handleSearch} />
-      // Show only filtered spaceships if there are any
+
       {filteredSpaceships.length > 0 ? (
         <FlatList
           data={filteredSpaceships}

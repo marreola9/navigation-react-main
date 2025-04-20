@@ -34,9 +34,10 @@ export default function Films({ navigation }) {
   if (loading) return <ActivityIndicator size="large" color="dodgerblue" />;
   if (error) return <Text>Error: {error.message}</Text>;
 
+  // Show only filtered pfilms if there are any
+  // Search Input
   return (
     <View style={styles.container}>
-      // Search Input
       <TextInput
         style={styles.input}
         placeholder="Search films..."
@@ -44,7 +45,7 @@ export default function Films({ navigation }) {
         onChangeText={setSearchText}
       />
       <Button title="Search" onPress={handleSearch} />
-      // Show only filtered pfilms if there are any
+
       {filteredFilms.length > 0 ? (
         <FlatList
           data={filteredFilms}
