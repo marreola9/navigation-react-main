@@ -1,4 +1,3 @@
-// App.js
 import React from "react";
 import { Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -31,18 +30,18 @@ function MainNavigator() {
   );
 }
 
+// Modal screen
+// Main tabs or drawer
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {" "}
         // Main tabs or drawer
         <Stack.Screen
           name="Main"
           component={MainNavigator}
           options={{ headerShown: false }}
         />
-        // Modal screen
         <Stack.Screen
           name="Search"
           component={Search}
