@@ -36,7 +36,6 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        // Main tabs or drawer
         <Stack.Screen
           name="Main"
           component={MainNavigator}
