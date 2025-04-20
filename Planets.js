@@ -34,9 +34,11 @@ export default function Planets({ navigation }) {
   if (loading) return <ActivityIndicator size="large" color="dodgerblue" />;
   if (error) return <Text>Error: {error.message}</Text>;
 
+  // Search Input
+  // Show only filtered planets if there are any
+
   return (
     <View style={styles.container}>
-      // Search Input
       <TextInput
         style={styles.input}
         placeholder="Search planets..."
@@ -44,7 +46,7 @@ export default function Planets({ navigation }) {
         onChangeText={setSearchText}
       />
       <Button title="Search" onPress={handleSearch} />
-      // Show only filtered planets if there are any
+
       {filteredPlanets.length > 0 ? (
         <FlatList
           data={filteredPlanets}
