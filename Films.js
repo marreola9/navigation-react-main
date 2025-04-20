@@ -22,7 +22,7 @@ export default function Films({ navigation }) {
     if (searchText.trim() === "") return;
 
     const matches = films.filter((film) =>
-      film.name.toLowerCase().includes(searchText.toLowerCase())
+      film.title.toLowerCase().includes(searchText.toLowerCase())
     );
 
     setFilteredFilms(matches);
@@ -50,7 +50,7 @@ export default function Films({ navigation }) {
           data={filteredFilms}
           keyExtractor={(item) => item.uid}
           renderItem={({ item }) => (
-            <Text style={styles.item}>{item.name}</Text>
+            <Text style={styles.item}>{item.title}</Text>
           )}
         />
       ) : (

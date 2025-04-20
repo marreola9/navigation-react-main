@@ -54,7 +54,7 @@ export default function SpaceshipsTab({ navigation }) {
           )}
         />
       ) : (
-        searchText !== "" && <Text>No matching films found.</Text>
+        searchText !== "" && <Text>No matching Spaceship found.</Text>
       )}
     </View>
   );
