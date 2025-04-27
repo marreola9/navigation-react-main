@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList } from "react-native";
-import { ActivityIndicator, TextInput, Button } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  TextInput,
+  Button,
+} from "react-native";
 import styles from "./styles";
 import { fetchData } from "./api";
 
@@ -25,17 +31,21 @@ export default function SpaceshipsTab({ navigation }) {
       spaceship.name.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    setFilteredSpaceships(matches);
+    const newMatches = matches.filter(
+      (m) => !filteredSpaceships.some((s) => s.uid === m.uid)
+    );
+
+    setFilteredSpaceships((prev) => [...prev, ...newMatches]);
 
     // Navigate to modal
     navigation.navigate("Search", { term: searchText });
   };
 
+  const dataToRender =
+    filteredSpaceships.length > 0 ? filteredSpaceships : spaceships;
+
   if (loading) return <ActivityIndicator size="large" color="dodgerblue" />;
   if (error) return <Text>Error: {error.message}</Text>;
-
-  // Show only filtered spaceships if there are any
-  // Search Input
 
   return (
     <View style={styles.container}>
@@ -47,17 +57,16 @@ export default function SpaceshipsTab({ navigation }) {
       />
       <Button title="Search" onPress={handleSearch} />
 
-      {filteredSpaceships.length > 0 ? (
-        <FlatList
-          data={filteredSpaceships}
-          keyExtractor={(item) => item.uid}
-          renderItem={({ item }) => (
-            <Text style={styles.item}>{item.name}</Text>
-          )}
-        />
-      ) : (
-        searchText !== "" && <Text>No matching Spaceship found.</Text>
-      )}
+      <ScrollView style={{ marginTop: 20 }}>
+        {dataToRender.map((item) => (
+          <View key={item.uid} style={styles.item}>
+            <Text>{item.name}</Text>
+          </View>
+        ))}
+        {dataToRender.length === 0 && searchText !== "" && (
+          <Text>No matching spaceships found.</Text>
+        )}
+      </ScrollView>
     </View>
   );
 }
