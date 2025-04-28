@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView } from "react-native";
-import { ActivityIndicator, TextInput, Button } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+  Button,
+  ActivityIndicator,
+} from "react-native";
+import Swipeable from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
 
@@ -28,18 +35,18 @@ export default function Films({ navigation }) {
       film.properties.title.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    const newMatches = matches.filter(
-      (m) => !filteredFilms.some((s) => s.uid === m.uid)
-    );
-
-    setFilteredFilms((prev) => [...prev, ...newMatches]);
+    setFilteredFilms(matches);
 
     navigation.navigate("Search", { term: searchText });
   };
 
+  const handleSwipe = (filmTitle) => {
+    console.log(`Swiped on: ${filmTitle}`);
+  };
+
   const dataToRender = filteredFilms.length > 0 ? filteredFilms : films;
 
-  if (loading) return <ActivityIndicator size="large" color="dodgerblue" />;
+  if (loading) return <ActivityIndicator size="large" color="green" />;
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
@@ -54,9 +61,11 @@ export default function Films({ navigation }) {
 
       <ScrollView style={{ marginTop: 20 }}>
         {dataToRender.map((item) => (
-          <View key={item.uid} style={styles.item}>
-            <Text>{item.properties.title}</Text>
-          </View>
+          <Swipeable
+            key={item.uid}
+            name={item.properties.title}
+            onSwipe={() => handleSwipe(item.properties.title)}
+          />
         ))}
         {dataToRender.length === 0 && searchText !== "" && (
           <Text>No matching films found.</Text>

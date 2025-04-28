@@ -3,10 +3,11 @@ import {
   View,
   Text,
   ScrollView,
-  ActivityIndicator,
   TextInput,
   Button,
+  ActivityIndicator,
 } from "react-native";
+import Swipeable from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
 
@@ -19,7 +20,10 @@ export default function Planets({ navigation }) {
 
   useEffect(() => {
     fetchData("planets")
-      .then(setPlanets)
+      .then((data) => {
+        console.log("Fetched planets:", data);
+        setPlanets(data);
+      })
       .catch(setError)
       .finally(() => setLoading(false));
   }, []);
@@ -31,19 +35,18 @@ export default function Planets({ navigation }) {
       planet.name.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    const newMatches = matches.filter(
-      (m) => !filteredPlanets.some((s) => s.uid === m.uid)
-    );
+    setFilteredPlanets(matches);
 
-    setFilteredPlanets((prev) => [...prev, ...newMatches]);
-
-    // Navigate to modal
     navigation.navigate("Search", { term: searchText });
+  };
+
+  const handleSwipe = (planetName) => {
+    console.log(`Swiped on: ${planetName}`);
   };
 
   const dataToRender = filteredPlanets.length > 0 ? filteredPlanets : planets;
 
-  if (loading) return <ActivityIndicator size="large" color="dodgerblue" />;
+  if (loading) return <ActivityIndicator size="large" color="green" />;
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
@@ -58,9 +61,11 @@ export default function Planets({ navigation }) {
 
       <ScrollView style={{ marginTop: 20 }}>
         {dataToRender.map((item) => (
-          <View key={item.uid} style={styles.item}>
-            <Text>{item.name}</Text>
-          </View>
+          <Swipeable
+            key={item.uid}
+            name={item.name}
+            onSwipe={() => handleSwipe(item.name)}
+          />
         ))}
         {dataToRender.length === 0 && searchText !== "" && (
           <Text>No matching planets found.</Text>

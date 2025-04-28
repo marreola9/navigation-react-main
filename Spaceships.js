@@ -3,10 +3,11 @@ import {
   View,
   Text,
   ScrollView,
-  ActivityIndicator,
   TextInput,
   Button,
+  ActivityIndicator,
 } from "react-native";
+import Swipeable from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
 
@@ -19,7 +20,10 @@ export default function SpaceshipsTab({ navigation }) {
 
   useEffect(() => {
     fetchData("starships")
-      .then(setSpaceships)
+      .then((data) => {
+        console.log("Fetched spaceships:", data);
+        setSpaceships(data);
+      })
       .catch(setError)
       .finally(() => setLoading(false));
   }, []);
@@ -31,20 +35,19 @@ export default function SpaceshipsTab({ navigation }) {
       spaceship.name.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    const newMatches = matches.filter(
-      (m) => !filteredSpaceships.some((s) => s.uid === m.uid)
-    );
+    setFilteredSpaceships(matches);
 
-    setFilteredSpaceships((prev) => [...prev, ...newMatches]);
-
-    // Navigate to modal
     navigation.navigate("Search", { term: searchText });
+  };
+
+  const handleSwipe = (spaceshipName) => {
+    console.log(`Swiped on: ${spaceshipName}`);
   };
 
   const dataToRender =
     filteredSpaceships.length > 0 ? filteredSpaceships : spaceships;
 
-  if (loading) return <ActivityIndicator size="large" color="dodgerblue" />;
+  if (loading) return <ActivityIndicator size="large" color="green" />;
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
@@ -59,9 +62,11 @@ export default function SpaceshipsTab({ navigation }) {
 
       <ScrollView style={{ marginTop: 20 }}>
         {dataToRender.map((item) => (
-          <View key={item.uid} style={styles.item}>
-            <Text>{item.name}</Text>
-          </View>
+          <Swipeable
+            key={item.uid}
+            name={item.name}
+            onSwipe={() => handleSwipe(item.name)}
+          />
         ))}
         {dataToRender.length === 0 && searchText !== "" && (
           <Text>No matching spaceships found.</Text>
