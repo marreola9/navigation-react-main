@@ -1,4 +1,7 @@
-import React from "react";
+import "react-native-gesture-handler";
+import "react-native-reanimated";
+
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -30,23 +33,23 @@ function MainNavigator() {
   );
 }
 
-// Modal screen
-// Main tabs or drawer
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Main"
-          component={MainNavigator}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Search"
-          component={Search}
-          options={{ presentation: "modal", title: "Search Result" }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={MainNavigator}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Search"
+            component={Search}
+            options={{ presentation: "modal", title: "Search Result" }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }

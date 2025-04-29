@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  Button,
-  ActivityIndicator,
-} from "react-native";
-import Swipeable from "./Swipeable";
+import { View, Text, ScrollView } from "react-native";
+import { TextInput, Button, ActivityIndicator } from "react-native";
+import SwipeableItem from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
 
@@ -16,7 +10,8 @@ export default function SpaceshipsTab({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
-  const [filteredSpaceships, setFilteredSpaceships] = useState([]);
+  const [displayList, setDisplayList] = useState([]);
+  const [removingIds, setRemovingIds] = useState([]);
 
   useEffect(() => {
     fetchData("starships")
@@ -35,17 +30,24 @@ export default function SpaceshipsTab({ navigation }) {
       spaceship.name.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    setFilteredSpaceships(matches);
+    const newResults = matches.filter(
+      (match) => !displayList.some((item) => item.uid === match.uid)
+    );
+
+    setDisplayList([...displayList, ...newResults]);
+    setSearchText("");
 
     navigation.navigate("Search", { term: searchText });
   };
 
-  const handleSwipe = (spaceshipName) => {
-    console.log(`Swiped on: ${spaceshipName}`);
-  };
+  const handleRemoveItem = (uid) => {
+    setRemovingIds((prev) => [...prev, uid]);
 
-  const dataToRender =
-    filteredSpaceships.length > 0 ? filteredSpaceships : spaceships;
+    setTimeout(() => {
+      setDisplayList((prev) => prev.filter((item) => item.uid !== uid));
+      setRemovingIds((prev) => prev.filter((id) => id !== uid));
+    }, 300);
+  };
 
   if (loading) return <ActivityIndicator size="large" color="green" />;
   if (error) return <Text>Error: {error.message}</Text>;
@@ -61,15 +63,20 @@ export default function SpaceshipsTab({ navigation }) {
       <Button title="Search" onPress={handleSearch} />
 
       <ScrollView style={{ marginTop: 20 }}>
-        {dataToRender.map((item) => (
-          <Swipeable
+        {displayList.map((item) => (
+          <SwipeableItem
             key={item.uid}
+            uid={item.uid}
             name={item.name}
-            onSwipe={() => handleSwipe(item.name)}
+            onSwipe={() => handleRemoveItem(item.uid)}
+            isRemoving={removingIds.includes(item.uid)}
           />
         ))}
-        {dataToRender.length === 0 && searchText !== "" && (
-          <Text>No matching spaceships found.</Text>
+
+        {displayList.length === 0 && (
+          <Text style={{ textAlign: "center", marginTop: 20 }}>
+            No spaceships searched yet.
+          </Text>
         )}
       </ScrollView>
     </View>

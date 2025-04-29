@@ -1,48 +1,48 @@
-import React, { useEffect, useRef } from "react";
-import {
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  Animated,
-} from "react-native";
-import styles from "./styles";
+import React from "react";
+import { Text, View, TouchableOpacity } from "react-native";
+import { Swipeable } from "react-native-gesture-handler";
+import Animated, { SlideInLeft, SlideOutRight } from "react-native-reanimated";
 
-export default function Swipeable({ onSwipe, name }) {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
-  function onScroll(e) {
-    if (e.nativeEvent.contentOffset.x >= 200) {
-      onSwipe();
-    }
-  }
-
-  const scrollProps = {
-    horizontal: true,
-    pagingEnabled: true,
-    showsHorizontalScrollIndicator: false,
-    scrollEventThrottle: 16,
-    onScroll,
+export default function SwipeableItem({ name, onSwipe, isRemoving }) {
+  const renderRightActions = () => {
+    return (
+      <TouchableOpacity onPress={onSwipe}>
+        <View
+          style={{
+            backgroundColor: "green",
+            justifyContent: "center",
+            alignItems: "flex-end",
+            padding: 20,
+            flex: 1,
+          }}
+        >
+          <Text style={{ color: "white", fontWeight: "bold" }}>Delete</Text>
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (
-    <View style={styles.swipeContainer}>
-      <ScrollView {...scrollProps}>
-        <TouchableOpacity>
-          <Animated.View style={[styles.swipeItem, { opacity: fadeAnim }]}>
-            <Text style={styles.swipeItemText}>{name}</Text>
-          </Animated.View>
+    <Swipeable
+      renderRightActions={renderRightActions}
+      friction={2}
+      rightThreshold={50}
+      overshootRight={false}
+    >
+      <Animated.View
+        entering={SlideInLeft}
+        exiting={isRemoving ? SlideOutRight : undefined}
+        style={{
+          backgroundColor: "white",
+          borderBottomColor: "#ccc",
+          borderBottomWidth: 1,
+          padding: 20,
+        }}
+      >
+        <TouchableOpacity onPress={onSwipe}>
+          <Text>{name}</Text>
         </TouchableOpacity>
-        <View style={styles.swipeBlank}></View>
-      </ScrollView>
-    </View>
+      </Animated.View>
+    </Swipeable>
   );
 }

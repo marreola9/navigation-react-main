@@ -7,7 +7,7 @@ import {
   Button,
   ActivityIndicator,
 } from "react-native";
-import Swipeable from "./Swipeable";
+import SwipeableItem from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
 
@@ -16,7 +16,8 @@ export default function Planets({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
-  const [filteredPlanets, setFilteredPlanets] = useState([]);
+  const [displayList, setDisplayList] = useState([]);
+  const [removingIds, setRemovingIds] = useState([]);
 
   useEffect(() => {
     fetchData("planets")
@@ -35,16 +36,24 @@ export default function Planets({ navigation }) {
       planet.name.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    setFilteredPlanets(matches);
+    const newResults = matches.filter(
+      (match) => !displayList.some((item) => item.uid === match.uid)
+    );
+
+    setDisplayList([...displayList, ...newResults]);
+    setSearchText("");
 
     navigation.navigate("Search", { term: searchText });
   };
 
-  const handleSwipe = (planetName) => {
-    console.log(`Swiped on: ${planetName}`);
-  };
+  const handleRemoveItem = (uid) => {
+    setRemovingIds((prev) => [...prev, uid]);
 
-  const dataToRender = filteredPlanets.length > 0 ? filteredPlanets : planets;
+    setTimeout(() => {
+      setDisplayList((prev) => prev.filter((item) => item.uid !== uid));
+      setRemovingIds((prev) => prev.filter((id) => id !== uid));
+    }, 300);
+  };
 
   if (loading) return <ActivityIndicator size="large" color="green" />;
   if (error) return <Text>Error: {error.message}</Text>;
@@ -60,15 +69,20 @@ export default function Planets({ navigation }) {
       <Button title="Search" onPress={handleSearch} />
 
       <ScrollView style={{ marginTop: 20 }}>
-        {dataToRender.map((item) => (
-          <Swipeable
+        {displayList.map((item) => (
+          <SwipeableItem
             key={item.uid}
+            uid={item.uid}
             name={item.name}
-            onSwipe={() => handleSwipe(item.name)}
+            onSwipe={() => handleRemoveItem(item.uid)}
+            isRemoving={removingIds.includes(item.uid)}
           />
         ))}
-        {dataToRender.length === 0 && searchText !== "" && (
-          <Text>No matching planets found.</Text>
+
+        {displayList.length === 0 && (
+          <Text style={{ textAlign: "center", marginTop: 20 }}>
+            No planets searched yet.
+          </Text>
         )}
       </ScrollView>
     </View>
