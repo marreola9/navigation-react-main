@@ -10,6 +10,7 @@ import {
 import SwipeableItem from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
+import Icon from "react-native-vector-icons/Fontisto";
 
 export default function Films({ navigation }) {
   const [films, setFilms] = useState([]);
@@ -60,6 +61,9 @@ export default function Films({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.iconContainer}>
+        <Icon name="film" size={100} color="black" />
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Search Films..."

@@ -4,6 +4,7 @@ import { TextInput, Button, ActivityIndicator } from "react-native";
 import SwipeableItem from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function SpaceshipsTab({ navigation }) {
   const [spaceships, setSpaceships] = useState([]);
@@ -54,6 +55,9 @@ export default function SpaceshipsTab({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.iconContainer}>
+        <Icon name="space-station" size={100} color="black" />
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Search Spaceships..."

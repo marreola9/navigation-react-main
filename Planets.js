@@ -6,10 +6,12 @@ import {
   TextInput,
   Button,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import SwipeableItem from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default function Planets({ navigation }) {
   const [planets, setPlanets] = useState([]);
@@ -60,6 +62,9 @@ export default function Planets({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.iconContainer}>
+        <Icon name="planet" size={100} color="black" />
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Search Planets..."

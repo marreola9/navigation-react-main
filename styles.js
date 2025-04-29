@@ -20,4 +20,9 @@ export default StyleSheet.create({
     marginVertical: 5,
     overflow: "hidden",
   },
+  iconContainer: {
+    marginBottom: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
