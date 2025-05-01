@@ -5,6 +5,7 @@ import SwipeableItem from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import OfflineNotice from "./Offline";
 
 export default function SpaceshipsTab({ navigation }) {
   const [spaceships, setSpaceships] = useState([]);
@@ -65,6 +66,8 @@ export default function SpaceshipsTab({ navigation }) {
         onChangeText={setSearchText}
       />
       <Button title="Search" onPress={handleSearch} />
+
+      <OfflineNotice />
 
       <ScrollView style={{ marginTop: 20 }}>
         {displayList.map((item) => (

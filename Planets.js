@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  Button,
-  ActivityIndicator,
-  Image,
-} from "react-native";
+import { View, Text, ScrollView } from "react-native";
+import { TextInput, Button, ActivityIndicator } from "react-native";
+
 import SwipeableItem from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
 import Icon from "react-native-vector-icons/Ionicons";
+import OfflineNotice from "./Offline";
 
 export default function Planets({ navigation }) {
   const [planets, setPlanets] = useState([]);
@@ -72,6 +67,8 @@ export default function Planets({ navigation }) {
         onChangeText={setSearchText}
       />
       <Button title="Search" onPress={handleSearch} />
+
+      <OfflineNotice />
 
       <ScrollView style={{ marginTop: 20 }}>
         {displayList.map((item) => (

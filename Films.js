@@ -11,6 +11,7 @@ import SwipeableItem from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
 import Icon from "react-native-vector-icons/Fontisto";
+import OfflineNotice from "./Offline";
 
 export default function Films({ navigation }) {
   const [films, setFilms] = useState([]);
@@ -72,6 +73,8 @@ export default function Films({ navigation }) {
       />
       <Button title="Search" onPress={handleSearch} />
 
+      <OfflineNotice />
+
       <ScrollView style={{ marginTop: 20 }}>
         {displayList.map((item) => (
           <SwipeableItem
@@ -85,7 +88,7 @@ export default function Films({ navigation }) {
 
         {displayList.length === 0 && (
           <Text style={{ textAlign: "center", marginTop: 20 }}>
-            No matching films found.
+            No films searched yet.
           </Text>
         )}
       </ScrollView>
