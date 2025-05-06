@@ -7,7 +7,6 @@ import styles from "./styles";
 import { fetchData } from "./api";
 import Icon from "react-native-vector-icons/Ionicons";
 import OfflineNotice from "./Offline";
-import PlanetsDetail from "./PlanetsDetail";
 
 export default function Planets({ navigation }) {
   const [planets, setPlanets] = useState([]); // Todos los planetas encontrados en el API
@@ -58,7 +57,10 @@ export default function Planets({ navigation }) {
   };
 
   if (loading) return <ActivityIndicator size="large" color="green" />;
+
   if (error) return <Text>Error: {error.message}</Text>;
+
+  // icono
 
   return (
     <View style={styles.container}>
