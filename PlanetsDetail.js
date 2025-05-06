@@ -16,11 +16,16 @@ export default function PlanetsDetail({ route }) {
   //se agrega el icono en la pantalla de detalles
   return (
     <View style={styles.container}>
-      <Icon name="planet" size={100} color="black" />
+      <Icon
+        name="planet"
+        size={300}
+        color="green"
+        style={{ marginBottom: 30 }}
+      />
       <Text style={styles.title}>{planet.name}</Text>
-      <Text>Climate: {planet.climate}</Text>
-      <Text>Diameter: {planet.diameter}</Text>
-      <Text>Population: {planet.population}</Text>
+      <Text style={styles.detailText}>Climate: {planet.climate}</Text>
+      <Text style={styles.detailText}>Diameter: {planet.diameter}</Text>
+      <Text style={styles.detailText}>Population: {planet.population}</Text>
     </View>
   );
 }
@@ -30,11 +35,16 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    paddingTop: 50,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marging: 10, // espacio entre el planeta y el titulo
+    margin: 10, // espacio entre el planeta y el titulo
+  },
+  detailText: {
+    fontSize: 18, // detalles en los textos de diametro, poblacion, clima
+    marginVertical: 5,
   },
 });
