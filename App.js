@@ -12,6 +12,7 @@ import Planets from "./Planets";
 import Films from "./Films";
 import SpaceshipsTab from "./Spaceships";
 import Search from "./Search";
+import PlanetsDetail from "./PlanetsDetail";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -47,6 +48,11 @@ export default function App() {
             name="Search"
             component={Search}
             options={{ presentation: "modal", title: "Search Result" }}
+          />
+          <Stack.Screen
+            name="PlanetsDetail"
+            component={PlanetsDetail}
+            options={{ title: "Planets Details" }}
           />
         </Stack.Navigator>
       </NavigationContainer>

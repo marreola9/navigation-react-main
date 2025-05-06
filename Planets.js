@@ -7,22 +7,27 @@ import styles from "./styles";
 import { fetchData } from "./api";
 import Icon from "react-native-vector-icons/Ionicons";
 import OfflineNotice from "./Offline";
+import PlanetsDetail from "./PlanetsDetail";
 
 export default function Planets({ navigation }) {
-  const [planets, setPlanets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchText, setSearchText] = useState("");
-  const [displayList, setDisplayList] = useState([]);
-  const [removingIds, setRemovingIds] = useState([]);
+  const [planets, setPlanets] = useState([]); // Todos los planetas encontrados en el API
+  const [loading, setLoading] = useState(true); // Muestra el indicador de carga hasta que se cargan los datos
+  const [error, setError] = useState(null); // Se encarga de los errores de API
+  const [searchText, setSearchText] = useState(""); // Lo que el usuario escribe en la barra de busqueda
+  const [displayList, setDisplayList] = useState([]); // Lista de planetas que se muestran después de la búsqueda
+  const [removingIds, setRemovingIds] = useState([]); // mantiene record de los planetas que se han borrado
 
   useEffect(() => {
     fetchData("planets")
       .then((data) => {
         console.log("Fetched planets:", data);
-        setPlanets(data);
+        setPlanets(data); // Guarda todos los planetas en  state
       })
+
+      // Guarda cualquier error
       .catch(setError)
+
+      // Deja de mostrar la barra cargadora
       .finally(() => setLoading(false));
   }, []);
 
@@ -76,8 +81,10 @@ export default function Planets({ navigation }) {
             key={item.uid}
             uid={item.uid}
             name={item.name}
-            onSwipe={() => handleRemoveItem(item.uid)}
-            isRemoving={removingIds.includes(item.uid)}
+            onSwipe={() =>
+              navigation.navigate("PlanetsDetail", { planet: item })
+            } // esta parte es la que supuestamente lleva a otra screen
+            //isRemoving={removingIds.includes(item.uid)}
           />
         ))}
 
