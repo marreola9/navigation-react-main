@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView } from "react-native";
-import { TextInput, Button, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+  ActivityIndicator,
+} from "react-native";
 import SwipeableItem from "./Swipeable";
 import styles from "./styles";
 import { fetchData } from "./api";
@@ -12,7 +17,6 @@ export default function SpaceshipsTab({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
-  const [displayList, setDisplayList] = useState([]);
   const [removingIds, setRemovingIds] = useState([]);
 
   useEffect(() => {
@@ -25,30 +29,23 @@ export default function SpaceshipsTab({ navigation }) {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleSearch = () => {
-    if (searchText.trim() === "") return;
+  useEffect(() => {
+    setRemovingIds([]);
+  }, [searchText]);
 
-    const matches = spaceships.filter((spaceship) =>
-      spaceship.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-
-    const newResults = matches.filter(
-      (match) => !displayList.some((item) => item.uid === match.uid)
-    );
-
-    setDisplayList([...displayList, ...newResults]);
-    setSearchText("");
-
-    navigation.navigate("Search", { term: searchText });
-  };
+  const filteredList =
+    searchText.trim() === ""
+      ? []
+      : spaceships
+          .filter((spaceship) =>
+            spaceship.name.toLowerCase().includes(searchText.toLowerCase())
+          )
+          .filter((spaceship) => !removingIds.includes(spaceship.uid));
 
   const handleRemoveItem = (uid) => {
-    setRemovingIds((prev) => [...prev, uid]);
-
-    setTimeout(() => {
-      setDisplayList((prev) => prev.filter((item) => item.uid !== uid));
-      setRemovingIds((prev) => prev.filter((id) => id !== uid));
-    }, 300);
+    if (!removingIds.includes(uid)) {
+      setRemovingIds((prev) => [...prev, uid]);
+    }
   };
 
   if (loading) return <ActivityIndicator size="large" color="green" />;
@@ -65,24 +62,30 @@ export default function SpaceshipsTab({ navigation }) {
         value={searchText}
         onChangeText={setSearchText}
       />
-      <Button title="Search" onPress={handleSearch} />
 
       <OfflineNotice />
 
       <ScrollView style={{ marginTop: 20 }}>
-        {displayList.map((item) => (
+        {filteredList.map((item) => (
           <SwipeableItem
             key={item.uid}
             uid={item.uid}
             name={item.name}
-            onSwipe={() => handleRemoveItem(item.uid)}
-            isRemoving={removingIds.includes(item.uid)}
+            onSwipe={() => {
+              if (
+                item.name.toLowerCase().trim() ===
+                searchText.toLowerCase().trim()
+              ) {
+                handleRemoveItem(item.uid);
+              }
+              // Else: do nothing
+            }}
           />
         ))}
 
-        {displayList.length === 0 && (
+        {filteredList.length === 0 && (
           <Text style={{ textAlign: "center", marginTop: 20 }}>
-            No spaceships searched yet.
+            No matching spaceship found.
           </Text>
         )}
       </ScrollView>
